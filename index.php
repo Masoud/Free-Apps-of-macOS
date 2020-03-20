@@ -17,14 +17,6 @@ foreach ($html->find('.main-content .section') as $body) {
         $title = $title->text();
         print_r($title);
     }
-    // foreach ($body->find('.icon img') as $img) {
-    //     $img = $img->src;
-    //     print_r($img);
-    //     print_r('<br>');
-        // $url_image = $img;
-        // $img_name = './'.$title.'.png';
-        // file_put_contents($img_name, file_get_contents($url_image));
-    // }
     foreach ($body->find('.actions .price') as $price) {
         $price = $price->text();
         $price = str_replace('was', '', $price);
@@ -38,6 +30,7 @@ foreach ($html->find('.main-content .section') as $body) {
     }
     foreach ($body->find('.actions .buttons.desktop a') as $href) {
         $href = $href->href;
+        $href=str_replace('apple.com/nl/','apple.com/us/',$href);
         $url = 'https://appshopper.com' . $href;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -58,12 +51,16 @@ foreach ($html->find('.main-content .section') as $body) {
             print_r($image);
             print_r('<br>');
             $url_image = $image;
-            $img_name = './'.$title.'.png';
+            $img_name = './' . $title . '.png';
             file_put_contents($img_name, file_get_contents($url_image));
             $first++;
             if ($first == 1) {
                 break;
             }
         }
+    }
+    $number++;
+    if ($number >= 5) {
+        break;
     }
 }
