@@ -6,6 +6,7 @@ ini_set('max_execution_time', 0);
 
 // Load Libraries
 require_once 'vendor/autoload.php';
+require 'ResizeImage.php';
 
 use DiDom\Document;
 $base_url = 'https://appshopper.com/mac/all/prices/free/';
@@ -30,7 +31,7 @@ foreach ($html->find('.main-content .section') as $body) {
     }
     foreach ($body->find('.actions .buttons.desktop a') as $href) {
         $href = $href->href;
-        $href=str_replace('apple.com/nl/','apple.com/us/',$href);
+        $href = str_replace('apple.com/nl/', 'apple.com/us/', $href);
         $url = 'https://appshopper.com' . $href;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -53,10 +54,26 @@ foreach ($html->find('.main-content .section') as $body) {
             $url_image = $image;
             $img_name = './' . $title . '.png';
             file_put_contents($img_name, file_get_contents($url_image));
+
+            $im = imagecreatefrompng('./' . $title . '.png');
+            $srcWidth = imagesx($im);
+            $srcHeight = imagesy($im);
+            $nWidth = 81;
+            $nHeight = 81;
+            $newImg = imagecreatetruecolor($nWidth, $nHeight);
+            imagealphablending($newImg, false);
+            imagesavealpha($newImg, true);
+            $transparent = imagecolorallocatealpha($newImg, 255, 255, 255, 127);
+            imagefilledrectangle($newImg, 0, 0, $nWidth, $nHeight, $transparent);
+            imagecopyresampled($newImg, $im, 0, 0, 0, 0, $nWidth, $nHeight,
+                $srcWidth, $srcHeight);
+            imagepng($newImg,'./' . $title . '.png');
+
             $first++;
             if ($first == 1) {
                 break;
             }
+
         }
     }
     $number++;
