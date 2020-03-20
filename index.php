@@ -14,9 +14,7 @@ $number = 1;
 $myApps = [];
 foreach ($html->find('.main-content .section') as $body) {
     foreach ($body->find('.details h2') as $title) {
-        // print_r('<br>');
         $title = $title->text();
-        // print_r($title);
     }
     foreach ($body->find('.actions .price') as $price) {
         $price = $price->text();
@@ -28,14 +26,10 @@ foreach ($html->find('.main-content .section') as $body) {
         $western_arabic = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
         $eastern_arabic = array('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩');
         $price = str_replace($western_arabic, $eastern_arabic, $price);
-        if ($free == 'Free') {
-            // print_r($price);
-            // print_r('<br>');
-        }
     }
     foreach ($body->find('.actions .buttons.desktop a') as $href) {
         $href = $href->href;
-        $href = str_replace('apple.com/nl/', 'apple.com/us/', $href);
+        $href = str_replace('apple.com/nl/app', 'apple.com/us/app', $href);
         $url = 'https://appshopper.com' . $href;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -44,8 +38,6 @@ foreach ($html->find('.main-content .section') as $body) {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $a = curl_exec($ch);
         $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-        // echo $url;
-        // print_r('<br>');
         $app_url = $url;
         $appstore = new Document($app_url, true);
         $first = 0;
@@ -53,14 +45,12 @@ foreach ($html->find('.main-content .section') as $body) {
             $image = $image->srcset;
             $image = explode(' 1x', $image);
             $image = $image[0];
-            // print_r($image);
-            // print_r('<br>');
             $url_image = $image;
-            // $img_name = '../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png';
-            $img_name = './' . $title . '.png';
+            $img_name = '../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png';
+            // $img_name = './' . $title . '.png';
             file_put_contents($img_name, file_get_contents($url_image));
-            // $im = imagecreatefrompng('../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png');
-            $im = imagecreatefrompng('./' . $title . '.png');
+            $im = imagecreatefrompng('../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png');
+            // $im = imagecreatefrompng('./' . $title . '.png');
             $srcWidth = imagesx($im);
             $srcHeight = imagesy($im);
             $nWidth = 81;
@@ -72,9 +62,8 @@ foreach ($html->find('.main-content .section') as $body) {
             imagefilledrectangle($newImg, 0, 0, $nWidth, $nHeight, $transparent);
             imagecopyresampled($newImg, $im, 0, 0, 0, 0, $nWidth, $nHeight,
                 $srcWidth, $srcHeight);
-            // imagepng($newImg,'../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png');
-            imagepng($newImg, './' . $title . '.png');
-
+            imagepng($newImg,'../../../../../var/www/img.macneed.ir/freeapps/' . $title . '.png');
+            // imagepng($newImg, './' . $title . '.png');
             $first++;
             if ($first == 1) {
                 break;
