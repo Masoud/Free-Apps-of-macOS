@@ -8,9 +8,11 @@ include "index.php";
         </div>
         <?php foreach ($myApps as $apps) {?>
             <div class="post">
+            <a href="<?php echo $apps["url"]; ?>" target="_blank">
             <div class="img white">
                 <img src="<?php echo $apps["img_url"]; ?>" alt="free App mac">
             </div>
+            </a>
             <div class="title">
                 <h2><a href="<?php echo $apps["url"]; ?>" target="_blank"><?php echo $apps["title"]; ?></a>
                 </h2>
